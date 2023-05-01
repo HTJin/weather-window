@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bodymovin/5.11.0/lottie.min.js"></script>
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/latest/normalize.css">
+    <link rel="stylesheet" href="static/css/main.css">
+    <link rel="icon" type="image/x-icon" href="static/images/sunlogo.svg">
+    <title>Weather Window</title>
+</head>
+<body class="overflow-hidden bg-gradient-to-t from-sky-900 via-sky-800 to-emerald-700 h-screen">
+    <div class="fixed transform scale-75 w-screen">
+        <div class="bg-cover bg-center w-[25vw] h-[80vh] flex flex-col justify-center mx-auto" style="background-image: url(static/images/sunny.jpg);">
+            <div class="w-[70vw] h-[3vh] self-center flex justify-center top-[3vh] z-10">
+                <span class="h-full w-[3vh] rounded-full bg-zinc-800"></span>
+                <span class="h-full w-full bg-zinc-800 rounded-3xl"></span>
+                <span class="h-full w-[3vh] rounded-full bg-zinc-800"></span>
+            </div>
+            <div class="container w-full h-full mx-auto">
+                <div class="relative w-full h-full z-10" id="curtain-wrapper">
+                    <div class="left-curtain rounded-lg absolute w-[40vw] h-[90vh] transform translate-y-[-3vh] transition-all ease-linear left-0 z-20" id="left-curtain"></div>
+                    <div class="right-curtain rounded-lg absolute w-[40vw] h-[90vh] transform translate-y-[-3vh] transition-all ease-linear right-0 z-20" id="right-curtain"></div>
+                    <div class="relative w-full h-full overflow-hidden">
+                        <img class="absolute w-full h-full transition-all opacity-40 z-0" src="static/images/glass.jpg" alt="Window" id="glass">
+                        <div class="absolute w-full h-full transition-all z-0 grid grid-rows-1 sm:grid-rows-2 lg:grid-rows-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3" id="window">
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="w-[60vw] h-[6vh] rounded-tl-[50em] rounded-tr-[50em] rounded-bl-full rounded-br-full mx-auto relative top-0 bg-gradient-to-t from-zinc-900 from-40% via-zinc-800 via-80% to-cyan-500"></div>
+    </div>
+    <div class="container fixed bottom-20 -left-32 mx-auto w-full text-right text-sky-100">
+        <h1 class="text-xl mr-4">Let's check out the weather!</h1>
+        <div class="mt-10 relative">
+            <label for="city-field" class="absolute right-44 -top-5 inline-block px-1 text-xs font-medium">City (required): <span class="text-red-600">*</span></label>
+            <input type="text" name="city" id="city-field" class="text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-grey-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Pittsburgh">
+            <label for="zip-field" class="absolute -top-5 inline-block px-1 text-xs font-medium">Zipcode (optional):</label>
+            <input type="text" name="zip" id="zip-field" class="w-28 text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-grey-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="15221">
+        </div>
+    </div>
+    
+    <script src="js/getWeather.js"></script>
+    <script src="js/windowControl.js"></script>
+</body>
+</html>
