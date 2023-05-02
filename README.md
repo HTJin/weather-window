@@ -3,12 +3,6 @@
 A weather application that displays the current weather and temperature for a given city or zip code. Users can interact with a virtual window/curtains to reveal the weather information.
 This application uses OpenWeatherMap API to fetch weather data, and Spotify API to play a song based on the current weather.
 
-## Table of Contents
-
-1. [Features](#features)
-2. [Usage](#usage)
-3. [APIs Used](#apis-used)
-
 ## Features
 
 - Interactive window and curtains animation
