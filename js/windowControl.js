@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const weatherElement = document.getElementById("weather");
 
     cityField.addEventListener("input", filterCityInput);
+    zipField.addEventListener("input", filterZipInput);
     cityField.addEventListener("input", enableCurtainInteraction);
     cityField.addEventListener("keydown", handleEnterKey);
     zipField.addEventListener("keydown", handleEnterKey);
@@ -57,8 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const regex = /[^a-zA-Z\u0080-\u024F .'-]/g;
         cityField.value = cityField.value.replace(regex, "");
     }
+    function filterZipInput() {
+        zipField.value = zipField.value.replace(/[^\d]/g, "");
+    }
 
-    function openCurtains() {
+    async function openCurtains() {
         if (!windowElement.classList.contains("-translate-y-full")) {
             leftCurtain.classList.add("w-[80%]");
             rightCurtain.classList.add("w-[80%]");
@@ -69,7 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => {
                 windowElement.classList.add("-translate-y-full");
                 glassElement.classList.add("-translate-y-full");
-            }, 500); // 500ms is the default transition time in Tailwind CSS
+            }, 500);
+            await window.clickedEvent();
         }
     }
 
@@ -85,6 +90,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 leftCurtain.classList.remove("w-[80%]");
                 rightCurtain.classList.remove("w-[80%]");
             }, 501);
+            if (typeof stopSnippet === "function") {
+                stopSnippet();
+            }
         }
     }
 
@@ -121,6 +129,8 @@ document.addEventListener("DOMContentLoaded", () => {
     function resetForm() {
         cityField.value = "";
         zipField.value = "";
+        weatherElement.classList.remove("relative", "bottom-24");
+        temperatureElement.classList.remove("relative", "bottom-24");
         weatherElement.innerHTML = "";
         temperatureElement.innerHTML =
             "What's the weather looking like out there?";
