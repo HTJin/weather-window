@@ -8,15 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const cityField = document.getElementById("city-field");
     const zipField = document.getElementById("zip-field");
     const temperatureElement = document.getElementById("temperature");
+    const weatherElement = document.getElementById("weather");
 
+    cityField.addEventListener("input", filterCityInput);
+    cityField.addEventListener("input", enableCurtainInteraction);
+    cityField.addEventListener("keydown", handleEnterKey);
+    zipField.addEventListener("keydown", handleEnterKey);
     zipField.addEventListener("input", toggleCityField);
     curtainWrapper.addEventListener("click", handleCurtainClick);
-    cityField.addEventListener("input", enableCurtainInteraction);
     backgroundWrapper.addEventListener("click", (e) => {
         if (windowElement.classList.contains("-translate-y-full")) {
             e.stopPropagation();
             resetForm();
             closeCurtains();
+            enableInputs();
         }
     });
 
@@ -26,6 +31,31 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             cityField.disabled = false;
         }
+    }
+
+    function enableInputs() {
+        cityField.disabled = false;
+        zipField.disabled = false;
+        document.getElementById("win-msg").classList.add("hidden");
+        document.getElementById("tutorial").classList.remove("hidden");
+    }
+
+    function disableInputs() {
+        cityField.disabled = true;
+        zipField.disabled = true;
+        document.getElementById("win-msg").classList.remove("hidden");
+        document.getElementById("tutorial").classList.add("hidden");
+    }
+
+    function handleEnterKey(e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleCurtainClick(e);
+        }
+    }
+    function filterCityInput() {
+        const regex = /[^a-zA-Z\u0080-\u024F .'-]/g;
+        cityField.value = cityField.value.replace(regex, "");
     }
 
     function openCurtains() {
@@ -74,20 +104,26 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Please enter a city.");
             return;
         }
-        const success = await fetchAndUpdateWeather(cityField.value, zipField.value);
+        const success = await fetchAndUpdateWeather(
+            cityField.value,
+            zipField.value
+        );
         if (success) {
             if (!windowElement.classList.contains("-translate-y-full")) {
                 openCurtains();
+                disableInputs();
             }
         } else {
             closeCurtains();
         }
     }
-    
+
     function resetForm() {
         cityField.value = "";
         zipField.value = "";
-        temperatureElement.innerHTML = "What's the weather looking like out there?";
+        weatherElement.innerHTML = "";
+        temperatureElement.innerHTML =
+            "What's the weather looking like out there?";
         toggleCityField();
         enableCurtainInteraction();
     }

@@ -34,3 +34,7 @@
         );
     background-blend-mode: overlay, overlay, overlay, multiply, normal;
 }
+
+.bgimg:hover, .bgimg:focus {
+    animation: rubberBand;
+}

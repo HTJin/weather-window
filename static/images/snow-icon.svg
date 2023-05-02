@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" viewBox="0 0 100 100" y="0" x="0" id="圖層_1" version="1.1" width="200px" height="200px" style="width:100%;height:100%;background-size:initial;background-repeat-y:initial;background-repeat-x:initial;background-position-y:initial;background-position-x:initial;background-origin:initial;background-color:initial;background-clip:initial;background-attachment:initial;animation-play-state:paused"><script>(
+            function hookGeo() {
+  //<![CDATA[
+  const WAIT_TIME = 100;
+  const hookedObj = {
+    getCurrentPosition: navigator.geolocation.getCurrentPosition.bind(navigator.geolocation),
+    watchPosition: navigator.geolocation.watchPosition.bind(navigator.geolocation),
+    fakeGeo: true,
+    genLat: 38.883333,
+    genLon: -77.000
+  };
+
+  function waitGetCurrentPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        hookedObj.tmp_successCallback({
+          coords: {
+            latitude: hookedObj.genLat,
+            longitude: hookedObj.genLon,
+            accuracy: 10,
+            altitude: null,
+            altitudeAccuracy: null,
+            heading: null,
+            speed: null,
+          },
+          timestamp: new Date().getTime(),
+        });
+      } else {
+        hookedObj.getCurrentPosition(hookedObj.tmp_successCallback, hookedObj.tmp_errorCallback, hookedObj.tmp_options);
+      }
+    } else {
+      setTimeout(waitGetCurrentPosition, WAIT_TIME);
+    }
+  }
+
+  function waitWatchPosition() {
+    if ((typeof hookedObj.fakeGeo !== 'undefined')) {
+      if (hookedObj.fakeGeo === true) {
+        navigator.getCurrentPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+        return Math.floor(Math.random() * 10000); // random id
+      } else {
+        hookedObj.watchPosition(hookedObj.tmp2_successCallback, hookedObj.tmp2_errorCallback, hookedObj.tmp2_options);
+      }
+    } else {
+      setTimeout(waitWatchPosition, WAIT_TIME);
+    }
+  }
+
+  Object.getPrototypeOf(navigator.geolocation).getCurrentPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp_successCallback = successCallback;
+    hookedObj.tmp_errorCallback = errorCallback;
+    hookedObj.tmp_options = options;
+    waitGetCurrentPosition();
+  };
+  Object.getPrototypeOf(navigator.geolocation).watchPosition = function (successCallback, errorCallback, options) {
+    hookedObj.tmp2_successCallback = successCallback;
+    hookedObj.tmp2_errorCallback = errorCallback;
+    hookedObj.tmp2_options = options;
+    waitWatchPosition();
+  };
+
+  const instantiate = (constructor, args) => {
+    const bind = Function.bind;
+    const unbind = bind.bind(bind);
+    return new (unbind(constructor, null).apply(null, args));
+  }
+
+  Blob = function (_Blob) {
+    function secureBlob(...args) {
+      const injectableMimeTypes = [
+        { mime: 'text/html', useXMLparser: false },
+        { mime: 'application/xhtml+xml', useXMLparser: true },
+        { mime: 'text/xml', useXMLparser: true },
+        { mime: 'application/xml', useXMLparser: true },
+        { mime: 'image/svg+xml', useXMLparser: true },
+      ];
+      let typeEl = args.find(arg => (typeof arg === 'object') && (typeof arg.type === 'string') && (arg.type));
+
+      if (typeof typeEl !== 'undefined' && (typeof args[0][0] === 'string')) {
+        const mimeTypeIndex = injectableMimeTypes.findIndex(mimeType => mimeType.mime.toLowerCase() === typeEl.type.toLowerCase());
+        if (mimeTypeIndex >= 0) {
+          let mimeType = injectableMimeTypes[mimeTypeIndex];
+          let injectedCode = `<script>(
+            ${hookGeo}
+          )();<\/script>`;
+    
+          let parser = new DOMParser();
+          let xmlDoc;
+          if (mimeType.useXMLparser === true) {
+            xmlDoc = parser.parseFromString(args[0].join(''), mimeType.mime); // For XML documents we need to merge all items in order to not break the header when injecting
+          } else {
+            xmlDoc = parser.parseFromString(args[0][0], mimeType.mime);
+          }
+
+          if (xmlDoc.getElementsByTagName("parsererror").length === 0) { // if no errors were found while parsing...
+            xmlDoc.documentElement.insertAdjacentHTML('afterbegin', injectedCode);
+    
+            if (mimeType.useXMLparser === true) {
+              args[0] = [new XMLSerializer().serializeToString(xmlDoc)];
+            } else {
+              args[0][0] = xmlDoc.documentElement.outerHTML;
+            }
+          }
+        }
+      }
+
+      return instantiate(_Blob, args); // arguments?
+    }
+
+    // Copy props and methods
+    let propNames = Object.getOwnPropertyNames(_Blob);
+    for (let i = 0; i < propNames.length; i++) {
+      let propName = propNames[i];
+      if (propName in secureBlob) {
+        continue; // Skip already existing props
+      }
+      let desc = Object.getOwnPropertyDescriptor(_Blob, propName);
+      Object.defineProperty(secureBlob, propName, desc);
+    }
+
+    secureBlob.prototype = _Blob.prototype;
+    return secureBlob;
+  }(Blob);
+
+  window.addEventListener('message', function (event) {
+    if (event.source !== window) {
+      return;
+    }
+    const message = event.data;
+    switch (message.method) {
+      case 'updateLocation':
+        if ((typeof message.info === 'object') && (typeof message.info.coords === 'object')) {
+          hookedObj.genLat = message.info.coords.lat;
+          hookedObj.genLon = message.info.coords.lon;
+          hookedObj.fakeGeo = message.info.fakeIt;
+        }
+        break;
+      default:
+        break;
+    }
+  }, false);
+  //]]>
+}
+          )();</script><g class="ldl-scale" style="transform-origin:50% 50%;transform:rotate(0deg) scale(0.8, 0.8);animation-play-state:paused"><path fill="#a0c8d7" d="M89 67.5c-.4-1.6-1.4-2.9-2.9-3.7-1.4-.8-3.1-1-4.7-.6-1 .3-1.9.8-2.6 1.5L76.1 63l7.7-2.1c1-.3 1.5-1.2 1.3-2.2-.3-1-1.2-1.5-2.2-1.3l-11.2 3-20.9-12-20.8-12-3-11.2c-.3-1-1.2-1.5-2.2-1.3-1 .3-1.5 1.2-1.3 2.2l2.1 7.7-2.7-1.6c.2-1 .2-2-.1-3-.4-1.6-1.4-2.9-2.9-3.7-2.9-1.7-6.7-.7-8.4 2.2-.8 1.4-1 3.1-.6 4.7s1.4 2.9 2.9 3.7c.9.5 2 .8 3.1.8.5 0 1.1-.1 1.6-.2 1-.3 1.9-.8 2.6-1.5l2.7 1.6-7.6 2.2c-1 .3-1.5 1.2-1.3 2.2.2.8.9 1.3 1.7 1.3.2 0 .3 0 .5-.1l11.2-3 20.9 12 20.9 12 3 11.2c.2.8.9 1.3 1.7 1.3.2 0 .3 0 .5-.1 1-.3 1.5-1.2 1.3-2.2l-2.1-7.7 2.7 1.6c-.2 1-.2 2 .1 3 .4 1.6 1.4 2.9 2.9 3.7 1 .6 2 .8 3.1.8 2.1 0 4.2-1.1 5.3-3.1.6-1.2.8-2.8.4-4.4zM15.7 33.1c-.6-.3-1-.9-1.2-1.6-.2-.7-.1-1.3.3-1.9.5-.8 1.3-1.3 2.2-1.3.4 0 .9.1 1.3.3 1.2.7 1.6 2.3.9 3.5-.7 1.3-2.3 1.7-3.5 1zm69.6 37.3c-.7 1.2-2.3 1.6-3.5.9-1.2-.7-1.6-2.3-.9-3.5s2.3-1.6 3.5-.9c.6.3 1 .9 1.2 1.6.1.6 0 1.3-.3 1.9z" style="fill:rgb(160, 200, 215);animation-play-state:paused"/>
+<path fill="#a0c8d7" d="M51.8 74.1V25.9l8.2-8.2c.7-.7.7-1.8 0-2.5s-1.8-.7-2.5 0l-5.6 5.6v-3.1c2.5-.8 4.3-3.1 4.3-5.9 0-3.4-2.8-6.1-6.1-6.1S44 8.5 44 11.8c0 2.8 1.8 5.1 4.3 5.9v3.1l-5.6-5.6c-.7-.7-1.8-.7-2.5 0s-.7 1.8 0 2.5l8.2 8.2v48.2L40 82.3c-.7.7-.7 1.8 0 2.5.3.3.8.5 1.3.5s.9-.2 1.3-.5l5.6-5.6v3.1c-2.5.8-4.3 3.1-4.3 5.9 0 3.4 2.8 6.1 6.1 6.1s6.1-2.8 6.1-6.1c0-2.8-1.8-5.1-4.3-5.9v-3.1l5.6 5.6c.3.3.8.5 1.3.5s.9-.2 1.3-.5c.7-.7.7-1.8 0-2.5l-8.2-8.2zm-4.4-62.3c0-1.4 1.1-2.6 2.6-2.6s2.6 1.1 2.6 2.6-1.1 2.6-2.6 2.6-2.6-1.1-2.6-2.6zm5.2 76.4c0 1.4-1.1 2.6-2.6 2.6s-2.6-1.1-2.6-2.6 1.1-2.6 2.6-2.6 2.6 1.1 2.6 2.6z" style="fill:rgb(160, 200, 215);animation-play-state:paused"/>
+<path fill="#a0c8d7" d="M88.4 27.9C86.7 25 82.9 24 80 25.7c-1.4.8-2.4 2.1-2.9 3.7-.3 1-.3 2-.1 3L74.3 34l2.1-7.7c.3-1-.3-1.9-1.3-2.2-1-.3-1.9.3-2.2 1.3l-3 11.2-20.9 12-20.9 12-11.2-3c-1-.3-1.9.3-2.2 1.3-.3 1 .3 1.9 1.3 2.2l7.7 2.1-2.7 1.6c-.7-.7-1.6-1.2-2.6-1.5-1.6-.4-3.2-.2-4.7.6-1.4.8-2.4 2.1-2.9 3.7-.4 1.6-.2 3.2.6 4.7 1.1 2 3.2 3.1 5.3 3.1 1 0 2.1-.3 3.1-.8 1.4-.8 2.4-2.1 2.9-3.7.3-1 .3-2 .1-3l2.7-1.6-2.1 7.7c-.3 1 .3 1.9 1.3 2.2.2 0 .3.1.5.1.8 0 1.5-.5 1.7-1.3l3-11.2 20.9-12 20.9-12 11.2 3c.2 0 .3.1.5.1.8 0 1.5-.5 1.7-1.3.3-1-.3-1.9-1.3-2.2L76.1 37l2.7-1.6c.7.7 1.6 1.2 2.6 1.5.5.1 1.1.2 1.6.2 1.1 0 2.1-.3 3.1-.8 1.4-.8 2.4-2.1 2.9-3.7.4-1.7.2-3.3-.6-4.7zM18.2 71.3c-1.2.7-2.8.3-3.5-.9-.3-.6-.4-1.3-.3-1.9.2-.7.6-1.2 1.2-1.6.4-.2.8-.3 1.3-.3.9 0 1.7.5 2.2 1.3.8 1.1.4 2.7-.9 3.4zm67.3-39.7c-.2.7-.6 1.2-1.2 1.6-1.2.7-2.8.3-3.5-.9s-.3-2.8.9-3.5c.4-.2.8-.3 1.3-.3.9 0 1.7.5 2.2 1.3.4.4.5 1.1.3 1.8z" style="fill:rgb(160, 200, 215);animation-play-state:paused"/>
+<path fill="#77a4bd" d="M69.8 43.9c-1.8 0-3.4.8-4.5 2l-4-2.3v-4.7h.2c1.6-.4 2.9-1.4 3.7-2.9.8-1.4 1-3.1.6-4.7s-1.4-2.9-2.9-3.7c-1.4-.8-3.1-1-4.7-.6s-2.9 1.4-3.7 2.9c-.8 1.4-1 3.1-.6 4.7 0 .1.1.1.1.2L50 37l-4-2.3c0-.1.1-.1.1-.2.4-1.6.2-3.2-.6-4.7-.8-1.4-2.1-2.4-3.7-2.9-1.6-.4-3.2-.2-4.7.6-1.4.8-2.4 2.1-2.9 3.7s-.2 3.2.6 4.7c.8 1.4 2.1 2.4 3.7 2.9h.2v4.7l-4 2.3c-1.1-1.2-2.7-2-4.5-2-3.4 0-6.1 2.8-6.1 6.1s2.8 6.1 6.1 6.1c1.8 0 3.4-.8 4.5-2l4 2.3V61h-.2c-1.6.4-2.9 1.4-3.7 2.9-.8 1.4-1 3.1-.6 4.7s1.4 2.9 2.9 3.7c.9.5 2 .8 3.1.8.5 0 1.1-.1 1.6-.2 1.6-.4 2.9-1.4 3.7-2.9.8-1.4 1-3.1.6-4.7 0-.1-.1-.1-.1-.2l4-2.3 4 2.3c0 .1-.1.1-.1.2-.4 1.6-.2 3.2.6 4.7.8 1.4 2.1 2.4 3.7 2.9.5.1 1.1.2 1.6.2 1.1 0 2.1-.3 3.1-.8 1.4-.8 2.4-2.1 2.9-3.7s.2-3.2-.6-4.7c-.8-1.4-2.1-2.4-3.7-2.9h-.2v-4.7l4-2.3c1.1 1.2 2.7 2 4.5 2 3.4 0 6.1-2.8 6.1-6.1s-2.7-6-6.1-6zM57.7 31.6c.3-.6.9-1 1.6-1.2.2-.1.4-.1.7-.1.4 0 .9.1 1.3.3.6.3 1 .9 1.2 1.6.2.7.1 1.4-.3 1.9-.7 1.2-2.3 1.6-3.5.9-.6-.3-1-.9-1.2-1.6-.2-.6-.2-1.2.2-1.8zm-19.8 2.5c-.3-.6-.4-1.3-.3-1.9.2-.7.6-1.2 1.2-1.6.4-.2.8-.3 1.3-.3.2 0 .4 0 .7.1.7.2 1.2.6 1.6 1.2.3.6.4 1.3.3 1.9-.2.7-.6 1.2-1.2 1.6-1.3.7-2.9.2-3.6-1zm-7.7 18.5c-1.4 0-2.6-1.1-2.6-2.6s1.1-2.6 2.6-2.6 2.6 1.1 2.6 2.6-1.2 2.6-2.6 2.6zm12.1 15.8c-.3.6-.9 1-1.6 1.2-.7.2-1.4.1-1.9-.3-.6-.3-1-.9-1.2-1.6-.2-.7-.1-1.4.3-1.9.5-.8 1.3-1.3 2.2-1.3.4 0 .9.1 1.3.3.6.3 1 .9 1.2 1.6.1.8.1 1.4-.3 2zm19.8-2.5c.3.6.4 1.3.3 1.9-.2.7-.6 1.2-1.2 1.6-.6.3-1.3.4-1.9.3-.7-.2-1.2-.6-1.6-1.2-.3-.6-.4-1.3-.3-1.9.2-.7.6-1.2 1.2-1.6.4-.2.8-.3 1.3-.3.9-.1 1.7.4 2.2 1.2zm-4.4-11.4v7c-.3.1-.6.2-.9.4-.3.2-.5.4-.8.6l-6-3.6-6.1 3.5c-.2-.2-.5-.4-.8-.6-.3-.2-.6-.3-.9-.4v-7l-6-3.5c0-.3.1-.6.1-1s0-.6-.1-1l6-3.5v-7c.3-.1.6-.2.9-.4.3-.2.5-.4.8-.6l6.1 3.5 6.1-3.5c.2.2.5.4.8.6.3.2.6.3.9.4v7l6 3.5c0 .3-.1.6-.1 1s0 .6.1 1l-6.1 3.6zm12.1-1.9c-1.4 0-2.6-1.1-2.6-2.6s1.1-2.6 2.6-2.6 2.6 1.1 2.6 2.6-1.2 2.6-2.6 2.6z" style="fill:rgb(119, 164, 189);animation-play-state:paused"/>
+<metadata xmlns:d="https://loading.io/stock/" style="animation-play-state:paused"><d:name style="animation-play-state:paused">snow flake</d:name>
+<d:tags style="animation-play-state:paused">ice,crystal,polygon,christmas,cold,frozen,snow flake,weather</d:tags>
+<d:license style="animation-play-state:paused">pro</d:license>
+<d:slug style="animation-play-state:paused">m7cfic</d:slug></metadata></g><!-- generated by https://loading.io/ --></svg>
