@@ -40,14 +40,14 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("win-msg").classList.add("hidden");
         document.getElementById("tutorial").classList.remove("hidden");
     }
-    
+
     function disableInputs() {
         cityField.disabled = true;
         zipField.disabled = true;
         document.getElementById("win-msg").classList.remove("hidden");
         document.getElementById("tutorial").classList.add("hidden");
-        document.getElementById("input-form").classList.remove("relative")
-        document.getElementById("input-form").classList.add("absolute", "bottom-10")
+        document.getElementById("input-form").classList.remove("relative");
+        document.getElementById("input-form").classList.add("absolute", "bottom-10");
     }
 
     function handleEnterKey(e) {
@@ -135,9 +135,8 @@ document.addEventListener("DOMContentLoaded", () => {
         temperatureElement.classList.remove("relative", "bottom-24");
         document.getElementById("input-form").classList.remove("absolute", "bottom-10");
         document.getElementById("input-form").classList.add("relative");
+        temperatureElement.innerHTML ="What's the weather looking like out there?";
         weatherElement.innerHTML = "";
-        temperatureElement.innerHTML =
-            "What's the weather looking like out there?";
         toggleCityField();
         enableCurtainInteraction();
     }
