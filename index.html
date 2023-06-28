@@ -1,77 +1,133 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
-    <link rel="stylesheet" href="https://necolas.github.io/normalize.css/latest/normalize.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    <link rel="stylesheet" href="static/css/main.css">
-    <link rel="icon" type="image/x-icon" href="static/images/favicon.svg">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    <link
+      rel="stylesheet"
+      href="https://necolas.github.io/normalize.css/latest/normalize.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <link rel="stylesheet" href="static/css/main.css" />
+    <link rel="icon" type="image/x-icon" href="static/images/favicon.svg" />
     <title>Weather Window</title>
-</head>
-<body class="overflow-hidden bg-gradient-to-t from-sky-900 via-sky-800 to-emerald-700 h-screen">
+  </head>
+  <body
+    class="overflow-hidden bg-gradient-to-t from-sky-900 via-sky-800 to-emerald-700 h-screen">
     <div class="relative transform scale-75 w-screen">
-        <div class="bg-cover bg-center w-[25vw] h-[80vh] flex flex-col justify-center mx-auto">
-            <div class="w-[70vw] h-[3vh] self-center flex justify-center top-[3vh] z-10">
-                <span class="h-full w-[3vh] rounded-full bg-zinc-800"></span>
-                <span class="h-full w-full bg-zinc-800 rounded-3xl"></span>
-                <span class="h-full w-[3vh] rounded-full bg-zinc-800"></span>
-            </div>
-            <div class="container w-full h-full mx-auto">
-                <div class="cursor-pointer relative w-full h-full z-10" id="curtain-wrapper">
-                    <div class="left-curtain rounded-lg absolute w-[40vw] h-[90vh] transform translate-y-[-3vh] transition-all ease-linear left-0 z-20" id="left-curtain"></div>
-                    <div class="right-curtain rounded-lg absolute w-[40vw] h-[90vh] transform translate-y-[-3vh] transition-all ease-linear right-0 z-20" id="right-curtain"></div>
-                    <div class="relative w-full h-full overflow-hidden">
-                        <div id="background-wrapper" class="absolute w-full h-full transition-all z-0">
-                            <img class="absolute w-full h-full transition-all opacity-30 z-0" src="static/images/glass.jpg" alt="Window" id="glass">
-                        </div>
-                        <div class="absolute w-full h-full transition-all z-0 grid grid-rows-1 sm:grid-rows-2 lg:grid-rows-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3" id="window">
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                            <div class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div
+        class="bg-cover bg-center w-[25vw] h-[80vh] flex flex-col justify-center mx-auto">
+        <div
+          class="w-[70vw] h-[3vh] self-center flex justify-center top-[3vh] z-10">
+          <span class="h-full w-[3vh] rounded-full bg-zinc-800"></span>
+          <span class="h-full w-full bg-zinc-800 rounded-3xl"></span>
+          <span class="h-full w-[3vh] rounded-full bg-zinc-800"></span>
         </div>
-        <div class="w-[60vw] h-[6vh] rounded-tl-[50em] rounded-tr-[50em] rounded-bl-full rounded-br-full mx-auto relative top-0 bg-gradient-to-t from-zinc-900 from-40% via-zinc-800 via-80% to-cyan-500"></div>
-    </div>
-    <div class="flex justify-center w-[30vw] justify-items-center mx-auto ">
-        <div class="container text-sky-100 flex flex-col items-center -mt-16">
-            <div class="flex flex-col items-center">
-                <div class="text-sky-100" id="weather"></div>
-                <h1 class="text-xl flex" id="temperature">What's the weather looking like out there?</h1>
-                <p class="text-xs" id="tutorial">Click or Press Enter to Open Window!</p>
+        <div class="container w-full h-full mx-auto">
+          <div
+            class="cursor-pointer relative w-full h-full z-10"
+            id="curtain-wrapper">
+            <div
+              class="left-curtain rounded-lg absolute w-[40vw] h-[90vh] transform translate-y-[-3vh] transition-all ease-linear left-0 z-20"
+              id="left-curtain"></div>
+            <div
+              class="right-curtain rounded-lg absolute w-[40vw] h-[90vh] transform translate-y-[-3vh] transition-all ease-linear right-0 z-20"
+              id="right-curtain"></div>
+            <div class="relative w-full h-full overflow-hidden">
+              <div
+                id="background-wrapper"
+                class="absolute w-full h-full transition-all z-0">
+                <img
+                  class="absolute w-full h-full transition-all opacity-30 z-0"
+                  src="static/images/glass.jpg"
+                  alt="Window"
+                  id="glass" />
+              </div>
+              <div
+                class="absolute w-full h-full transition-all z-0 grid grid-rows-1 sm:grid-rows-2 lg:grid-rows-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
+                id="window">
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+                <div
+                  class="place-self-stretch ring-inset ring-[1em] ring-zinc-800 ring-opacity-100"></div>
+              </div>
             </div>
-            <div class="mt-5 relative flex" id="input-form">
-                <div class="flex flex-col mr-2">
-                    <label for="city-field" class="px-1 text-xs font-medium">City (required): <span class="text-red-600">*</span></label>
-                    <input type="text" name="city" id="city-field" class="text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-grey-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="Pittsburgh">
-                </div>
-                <div class="flex flex-col">
-                    <label for="zip-field" class="px-1 text-xs font-medium">Zipcode (US only):</label>
-                    <input type="text" name="zip" maxlength="5" pattern="\d{5}" id="zip-field" class="w-28 text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-grey-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" placeholder="15221">
-                </div>
-            </div>
-            <p id="win-msg" class="absolute bottom-3 text-xs hidden">Click on the window to close and reset 👍</p>
+          </div>
         </div>
+      </div>
+      <div
+        class="w-[60vw] h-[6vh] rounded-tl-[50em] rounded-tr-[50em] rounded-bl-full rounded-br-full mx-auto relative top-0 bg-gradient-to-t from-zinc-900 from-40% via-zinc-800 via-80% to-cyan-500"></div>
     </div>
-    
+    <div class="flex justify-center w-[30vw] justify-items-center mx-auto">
+      <div class="container text-sky-100 flex flex-col items-center -mt-16">
+        <div class="flex flex-col items-center">
+          <div class="text-sky-100" id="weather"></div>
+          <h1 class="text-xl flex" id="temperature">
+            What's the weather looking like out there?
+          </h1>
+          <p class="text-xs" id="tutorial">
+            Click or Press Enter to Open Window!
+          </p>
+        </div>
+        <div class="mt-5 relative flex" id="input-form">
+          <div class="flex flex-col mr-2">
+            <label for="city-field" class="px-1 text-xs font-medium"
+              >City (required): <span class="text-red-600">*</span></label
+            >
+            <input
+              type="text"
+              name="city"
+              id="city-field"
+              class="text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-grey-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="Pittsburgh" />
+          </div>
+          <div class="flex flex-col">
+            <label for="zip-field" class="px-1 text-xs font-medium"
+              >Zipcode (US only):</label
+            >
+            <input
+              type="text"
+              name="zip"
+              maxlength="5"
+              pattern="\d{5}"
+              id="zip-field"
+              class="w-28 text-center rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-grey-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="15221" />
+          </div>
+        </div>
+        <p id="win-msg" class="absolute bottom-3 text-xs hidden">
+          Click on the window to close and reset 👍
+        </p>
+      </div>
+    </div>
+
     <script src="js/getWeather.js"></script>
     <script src="js/windowControl.js"></script>
     <script src="js/getSpotifySong.js"></script>
-</body>
+  </body>
 </html>
