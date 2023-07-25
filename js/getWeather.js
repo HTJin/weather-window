@@ -1,5 +1,5 @@
 async function fetchWeatherData(city, zip) {
-  const apiKey = "056e5a496ed237e46fe2e65ead648222";
+  const apiKey = process.env.apiKey;
   let apiUrl = `https://api.openweathermap.org/data/2.5/weather?appid=${apiKey}&`;
 
   if (zip) {
