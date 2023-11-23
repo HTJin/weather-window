@@ -20,5 +20,5 @@ This application uses OpenWeatherMap API to fetch weather data, and Spotify API 
 
 ## APIs Used
 
-- [OpenWeatherMap API](https://openweathermap.org/api) - Used to fetch weather data based on city or zip code.
-- [Spotify API](https://developer.spotify.com/documentation/web-api/) - Used to search for and play a song related to the current weather.
+- [OpenWeatherMap API](https://openweathermap.org/api) - Used to fetch weather data based on city or zip code
+- [Spotify API](https://developer.spotify.com/documentation/web-api/) - Used to search for and play a song related to the current weather
